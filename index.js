@@ -124,6 +124,27 @@ app.post("/members/changeState", async (req, res) => {
   res.send("ok");
 });
 
+// Forms
+
+app.get("/forms", async (req, res) => {
+  const { query } = req;
+  const { type, page = 0, size = 20 } = query;
+  const forms_query = knex("forms");
+  if (type) {
+    forms_query.where("type", type);
+  }
+  forms_query.offset(size * page).limit(size);
+  const result = await forms_query;
+  const count = await forms_query.count();
+  res.json({ data: result, count: count[0]["count(*)"] });
+});
+
+app.post("/forms", async (req, res) => {
+  const { body } = req;
+  const result = await knex("forms").insert({ ...body, status: "active" });
+  res.json(result);
+});
+
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server listening on ${process.env.HOST}:${process.env.PORT}`);
 });
