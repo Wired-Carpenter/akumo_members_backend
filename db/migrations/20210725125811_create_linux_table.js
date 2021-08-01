@@ -11,7 +11,12 @@ exports.up = function (knex) {
     table.string("info_source");
     table.string("partner");
     table.string("partner_name");
+    table.boolean("billable");
+    table.boolean("paid");
+    table.integer("form_id").unsigned();
     table.timestamp("created_at").defaultTo(knex.fn.now());
+
+    table.foreign("form_id").references("forms.id");
   });
 };
 
